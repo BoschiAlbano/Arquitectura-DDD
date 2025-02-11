@@ -1,3 +1,4 @@
+import { type Pool } from "mysql2/promise";
 import {
     AgendaNew,
     Agenda,
@@ -5,16 +6,19 @@ import {
 } from "../../1-dominio/IAgenda.entidad";
 import { IAgendaRepositorio } from "../../1-dominio/IRepositorio";
 
-import { pool } from "../../../db/mySql.db";
-
 export class MySqlRepositorio implements IAgendaRepositorio {
+    private pool: Pool;
+
+    constructor(pool: Pool) {
+        this.pool = pool;
+    }
     async Create(agendaNew: AgendaNew): Promise<Agenda | null> {
         try {
             const query = `
                     INSERT INTO agendas (UsuarioId, Nombre, Apellido, Telefono, Direccion, Email, Nota) VALUES (?, ?, ?, ?, ?, ?, ?);
                 `;
 
-            const [data, _table] = await pool.query(query, [
+            const [data, _table] = await this.pool.query(query, [
                 agendaNew.UsuarioId,
                 agendaNew.Nombre,
                 agendaNew.Apellido,
@@ -47,7 +51,10 @@ export class MySqlRepositorio implements IAgendaRepositorio {
             const query =
                 "SELECT * FROM agendas WHERE UsuarioId = ? and id = ?";
 
-            const [data, _table] = await pool.query(query, [usuarioId, id]);
+            const [data, _table] = await this.pool.query(query, [
+                usuarioId,
+                id,
+            ]);
 
             console.log(data);
 
@@ -61,7 +68,7 @@ export class MySqlRepositorio implements IAgendaRepositorio {
     async GetAll(usuarioId: string): Promise<Agenda[] | null> {
         try {
             const query = "SELECT * FROM agendas WHERE UsuarioId = ?";
-            const [data, _table] = await pool.query(query, [usuarioId]);
+            const [data, _table] = await this.pool.query(query, [usuarioId]);
             console.log(data);
             // @ts-ignore
             return data;
@@ -73,7 +80,7 @@ export class MySqlRepositorio implements IAgendaRepositorio {
     async Update(agenda: AgendaActualizar): Promise<Agenda | null> {
         try {
             const query = `SELECT * FROM agendas WHERE id = ?`;
-            const [data, _table] = await pool.query(query, [agenda.id]);
+            const [data, _table] = await this.pool.query(query, [agenda.id]);
 
             console.log(data);
             // @ts-ignore
@@ -102,7 +109,7 @@ export class MySqlRepositorio implements IAgendaRepositorio {
 
             const query2 = `update agendas set Nombre = ?, Apellido = ?, Direccion = ?, Nota = ?, Telefono = ?, Email = ? where id = ?`;
 
-            const [data2, _table2] = await pool.query(query2, [
+            const [data2, _table2] = await this.pool.query(query2, [
                 Actualizar.Nombre,
                 Actualizar.Apellido,
                 Actualizar.Direccion,
@@ -124,7 +131,7 @@ export class MySqlRepositorio implements IAgendaRepositorio {
         try {
             const query1 = "SELECT * FROM agendas WHERE id = ?";
 
-            const [data, _table] = await pool.query(query1, [id]);
+            const [data, _table] = await this.pool.query(query1, [id]);
 
             console.log(data);
             // @ts-ignore
@@ -133,7 +140,7 @@ export class MySqlRepositorio implements IAgendaRepositorio {
             }
 
             const query2 = "DELETE FROM agendas WHERE id = ?";
-            const [data2, _table2] = await pool.query(query2, [id]);
+            const [data2, _table2] = await this.pool.query(query2, [id]);
 
             console.log(data2);
             // @ts-ignore

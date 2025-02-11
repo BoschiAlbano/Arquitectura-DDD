@@ -1,16 +1,21 @@
+import { Pool } from "mysql2/promise";
 import { IUsuarioRepositorio } from "../../1-dominio/IRepositorio";
 import { usuarioRegister, usuario } from "../../1-dominio/IUsuario.entidad";
-import { pool } from "../../../db/mySql.db";
-// import { ResultSetHeader } from "mysql2/promise";
 
 export class MySqlRepositorio implements IUsuarioRepositorio {
+    private pool: Pool;
+
+    constructor(pool: Pool) {
+        this.pool = pool;
+    }
+
     async Create(usuarioRegister: usuarioRegister): Promise<usuario | null> {
         try {
             const query = `
             INSERT INTO usuarios (Nombre, Apellido, Dni, Email, Password)
             VALUES (?, ?, ?, ?, ?)`;
 
-            const [data, _table] = await pool.query(query, [
+            const [data, _table] = await this.pool.query(query, [
                 usuarioRegister.Nombre,
                 usuarioRegister.Apellido,
                 usuarioRegister.Dni,
@@ -37,7 +42,7 @@ export class MySqlRepositorio implements IUsuarioRepositorio {
         try {
             const query = `SELECT * FROM usuarios AS Us WHERE Us.Email = ?`;
 
-            const [data, _table] = await pool.query(query, [mail]);
+            const [data, _table] = await this.pool.query(query, [mail]);
 
             console.log(data);
             //@ts-ignore

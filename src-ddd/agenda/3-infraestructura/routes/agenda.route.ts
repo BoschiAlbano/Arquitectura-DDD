@@ -1,12 +1,15 @@
 import { Router } from "express";
 import { AgendaController } from "../controllers/agenda.controller";
 import { AgendaCasoUso } from "../../2-aplicacion/agenda.casoUso";
-import { SqlServerRepositorio } from "../repository/sqlServer.Repositorio";
+// import { SqlServerRepositorio } from "../repository/sqlServer.Repositorio";
 import Control_Token_Usuario from "../../../middleware/controlToken";
+import { MySqlRepositorio } from "../repository/mySql.Repositorio";
 
 const _router = Router();
 
-const sqlServerAgendaRepositorio = new SqlServerRepositorio();
+// const sqlServerAgendaRepositorio = new SqlServerRepositorio();
+const sqlServerAgendaRepositorio = new MySqlRepositorio();
+
 const agendaCasoUso = new AgendaCasoUso(sqlServerAgendaRepositorio);
 const agendaController = new AgendaController(agendaCasoUso);
 

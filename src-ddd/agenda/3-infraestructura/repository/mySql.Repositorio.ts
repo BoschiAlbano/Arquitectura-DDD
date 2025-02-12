@@ -9,7 +9,7 @@ import { IAgendaRepositorio } from "../../1-dominio/IRepositorio";
 export class MySqlRepositorio implements IAgendaRepositorio {
     private pool: Pool;
 
-    constructor(pool: Pool) {
+    constructor({ pool }: { pool: Pool }) {
         this.pool = pool;
     }
     async Create(agendaNew: AgendaNew): Promise<Agenda | null> {

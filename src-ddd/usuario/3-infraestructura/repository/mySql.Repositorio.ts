@@ -5,7 +5,7 @@ import { usuarioRegister, usuario } from "../../1-dominio/IUsuario.entidad";
 export class MySqlRepositorio implements IUsuarioRepositorio {
     private pool: Pool;
 
-    constructor(pool: Pool) {
+    constructor({ pool }: { pool: Pool }) {
         this.pool = pool;
     }
 

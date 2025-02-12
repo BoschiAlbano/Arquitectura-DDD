@@ -4,8 +4,12 @@ import { IAgendaRepositorio } from "../1-dominio/IRepositorio";
 export class AgendaCasoUso {
     private readonly IAgendaRepositorio: IAgendaRepositorio;
 
-    constructor(iAgendaRepositorio: IAgendaRepositorio) {
-        this.IAgendaRepositorio = iAgendaRepositorio;
+    constructor({
+        agendaRepositorio,
+    }: {
+        agendaRepositorio: IAgendaRepositorio;
+    }) {
+        this.IAgendaRepositorio = agendaRepositorio;
     }
 
     public Create = async ({ agendaNew }: { agendaNew: AgendaNew }) => {

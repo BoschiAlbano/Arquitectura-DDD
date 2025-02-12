@@ -48,9 +48,15 @@ const loginSchema = z.object({
 });
 
 export class UsuarioController {
-    constructor(private UsuarioCasoUso: UsuarioCasoUso) {}
+    // constructor(private UsuarioCasoUso: UsuarioCasoUso) {}
+    private readonly UsuarioCasoUso: UsuarioCasoUso;
+
+    constructor({ usuarioCasoUso }: { usuarioCasoUso: UsuarioCasoUso }) {
+        this.UsuarioCasoUso = usuarioCasoUso;
+    }
 
     public Login = async (req: any, res: any, next: any) => {
+        console.log("Login");
         try {
             // Validar los datos de entrada
             const validatedData = loginSchema.parse(req.body);
@@ -83,6 +89,7 @@ export class UsuarioController {
                     session: resultado?.userSession,
                 });
         } catch (error) {
+            console.log(error);
             // Manejar errores de validación de Zod
             if (error instanceof z.ZodError) {
                 return res.status(400).json({

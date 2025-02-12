@@ -21,7 +21,10 @@ const agendaSchema = z.object({
 });
 
 export class AgendaController {
-    constructor(private AgendaCasoUso: AgendaCasoUso) {}
+    private AgendaCasoUso: AgendaCasoUso;
+    constructor({ agendaCasoUso }: { agendaCasoUso: AgendaCasoUso }) {
+        this.AgendaCasoUso = agendaCasoUso;
+    }
 
     public GET = async (req: any, res: any, next: any) => {
         try {

@@ -9,8 +9,15 @@ import config from "../../config";
 export class UsuarioCasoUso {
     private readonly IUsuarioRepositorio: IUsuarioRepositorio;
 
-    constructor(iUsuarioRepositorio: IUsuarioRepositorio) {
-        this.IUsuarioRepositorio = iUsuarioRepositorio;
+    // constructor(iUsuarioRepositorio: IUsuarioRepositorio) {
+    //     this.IUsuarioRepositorio = iUsuarioRepositorio;
+    // }
+    constructor({
+        usuarioRepositorio,
+    }: {
+        usuarioRepositorio: IUsuarioRepositorio;
+    }) {
+        this.IUsuarioRepositorio = usuarioRepositorio;
     }
 
     public Login = async ({

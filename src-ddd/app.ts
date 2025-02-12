@@ -5,6 +5,8 @@ import Ruta_agenda from "./agenda/3-infraestructura/routes/agenda.route";
 import Ruta_usuario from "./usuario/3-infraestructura/routes/usuario.route";
 import handleErrors from "./middleware/handleErrors";
 import cookieParser from "cookie-parser";
+import { scopePerRequest } from "awilix-express";
+import container from "./container";
 
 const app = express();
 
@@ -24,6 +26,9 @@ app.use(cors(corsOptions)); // permite que los navegadores puedan hacer o no sol
 
 // Middleware para parsear cookies
 app.use(cookieParser());
+
+// Middleware para crear un nuevo scope por cada solicitud
+app.use(scopePerRequest(container));
 
 // middlewares
 app.use(express.json()); // interprete json

@@ -22,6 +22,7 @@ const agendaSchema = z.object({
 
 export class AgendaController {
     private AgendaCasoUso: AgendaCasoUso;
+
     constructor({ agendaCasoUso }: { agendaCasoUso: AgendaCasoUso }) {
         this.AgendaCasoUso = agendaCasoUso;
     }
@@ -47,6 +48,7 @@ export class AgendaController {
                 datos: result,
             });
         } catch (error) {
+            console.log(error);
             return next(error);
         }
     };
@@ -84,8 +86,10 @@ export class AgendaController {
 
     public DELETE = async (req: any, res: any, next: any) => {
         const { id } = req.params;
+        const UsuarioId = req.userId;
+
         try {
-            const result = await this.AgendaCasoUso.Delete({ id });
+            const result = await this.AgendaCasoUso.Delete({ id, UsuarioId });
 
             if (!result) {
                 return res.status(400).json({
@@ -107,11 +111,13 @@ export class AgendaController {
 
     public UPDATE = async (req: any, res: any, next: any) => {
         console.log(req.body);
+        const UsuarioId = req.userId;
+
         try {
             const validatedData = agendaSchemaUpdate.parse(req.body);
 
             const result = await this.AgendaCasoUso.Update({
-                agenda: validatedData,
+                agenda: { ...validatedData, UsuarioId },
             });
 
             if (!result) {
@@ -138,6 +144,31 @@ export class AgendaController {
                     })),
                 });
             }
+            return next(error);
+        }
+    };
+
+    public GETBYID = async (req: any, res: any, next: any) => {
+        const { id } = req.params;
+        const usuarioId = req.userId;
+
+        try {
+            const result = await this.AgendaCasoUso.GetById({ id, usuarioId });
+
+            if (!result) {
+                return res.status(404).json({
+                    error: 1,
+                    mensaje: `Agenda no Encontrado`,
+                    datos: {},
+                });
+            }
+
+            return res.status(200).json({
+                error: 0,
+                mensaje: `Agenda Encontrado`,
+                datos: result,
+            });
+        } catch (error) {
             return next(error);
         }
     };

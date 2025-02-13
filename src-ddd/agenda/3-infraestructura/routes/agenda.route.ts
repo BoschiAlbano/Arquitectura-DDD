@@ -11,9 +11,7 @@ import container from "../../../container";
 const _router = Router();
 
 // const sqlServerAgendaRepositorio = new SqlServerRepositorio();
-
 // const sqlServerAgendaRepositorio = new MySqlRepositorio(pool);
-
 // const agendaCasoUso = new AgendaCasoUso(sqlServerAgendaRepositorio);
 // const agendaController = new AgendaController(agendaCasoUso);
 
@@ -22,6 +20,8 @@ _router.use(scopePerRequest(container));
 const agendaController = container.resolve("agendaController");
 
 _router.get("/agenda", Control_Token_Usuario, agendaController.GET);
+
+_router.get("/agenda/:id", Control_Token_Usuario, agendaController.GETBYID);
 
 _router.post("/agenda", Control_Token_Usuario, agendaController.POST);
 

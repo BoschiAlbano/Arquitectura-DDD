@@ -1,9 +1,5 @@
 import { SqlServerConnection, sql } from "../../../db/sqlServer.db";
-import {
-    AgendaNew,
-    Agenda,
-    AgendaActualizar,
-} from "../../1-dominio/IAgenda.entidad";
+import { AgendaNew, Agenda } from "../../1-dominio/IAgenda.entidad";
 import { IAgendaRepositorio } from "../../1-dominio/IRepositorio";
 
 export class SqlServerRepositorio implements IAgendaRepositorio {
@@ -41,7 +37,6 @@ export class SqlServerRepositorio implements IAgendaRepositorio {
             throw new Error("Error en la base de datos");
         }
     }
-
     async Create(agendaNew: AgendaNew): Promise<Agenda | null> {
         try {
             // const pool = await getConnection();
@@ -68,44 +63,23 @@ export class SqlServerRepositorio implements IAgendaRepositorio {
             throw new Error("Error en la base de datos");
         }
     }
-
-    async Update(agenda: AgendaActualizar): Promise<Agenda | null> {
+    async Update(agenda: Agenda): Promise<Agenda | null> {
         try {
-            // const pool = await getConnection();
             const pool = await this.db.getConnection();
 
-            // Buscar Agenda
-            const GetById = await pool
-                .request()
-                .input("id", sql.BigInt, agenda.id)
-                .query("SELECT * FROM agendas WHERE id = @id");
-
-            const db = GetById.recordset[0] as Agenda;
-
-            if (!db) {
+            if (!agenda.id) {
                 return null;
             }
-            // Actualizar Campos
-            const Actualizar: Agenda = {
-                id: db.id,
-                UsuarioId: db.UsuarioId,
-                Apellido: agenda.Apellido ?? db.Apellido,
-                Direccion: agenda.Direccion ?? db.Direccion,
-                Email: agenda.Email ?? db.Email,
-                Nombre: agenda.Nombre ?? db.Nombre,
-                Telefono: agenda.Telefono ?? db.Telefono,
-                Nota: agenda.Nota ?? db.Nota,
-            };
 
             const result = await pool
                 .request()
-                .input("id", sql.BigInt, BigInt(Actualizar.id))
-                .input("Nombre", sql.VarChar, Actualizar.Nombre)
-                .input("Apellido", sql.VarChar, Actualizar.Apellido)
-                .input("Direccion", sql.VarChar, Actualizar.Direccion)
-                .input("Nota", sql.VarChar, Actualizar.Nota)
-                .input("Telefono", sql.VarChar, Actualizar.Telefono)
-                .input("Email", sql.VarChar, Actualizar.Email)
+                .input("id", sql.BigInt, BigInt(agenda.id))
+                .input("Nombre", sql.VarChar, agenda.Nombre)
+                .input("Apellido", sql.VarChar, agenda.Apellido)
+                .input("Direccion", sql.VarChar, agenda.Direccion)
+                .input("Nota", sql.VarChar, agenda.Nota)
+                .input("Telefono", sql.VarChar, agenda.Telefono)
+                .input("Email", sql.VarChar, agenda.Email)
                 .query(
                     "update agendas set Nombre = @Nombre, Apellido = @Apellido, Direccion = @Direccion, Nota = @Nota, Telefono = @Telefono, Email = @Email OUTPUT INSERTED.* where id = @id "
                 );
@@ -114,29 +88,16 @@ export class SqlServerRepositorio implements IAgendaRepositorio {
             throw new Error("Error en la base de datos");
         }
     }
-    async Delete(id: string): Promise<Agenda | null> {
+    async Delete(id: string): Promise<boolean> {
         try {
-            // const pool = await getConnection();
             const pool = await this.db.getConnection();
-
-            // Buscar Agenda
-            const GetById = await pool
-                .request()
-                .input("id", sql.BigInt, id)
-                .query("SELECT * FROM agendas WHERE id = @id");
-
-            const db = GetById.recordset[0] as Agenda;
-
-            if (!db) {
-                return null;
-            }
 
             const result = await pool
                 .request()
                 .input("id", sql.BigInt, id)
                 .query("DELETE FROM agendas WHERE id = @id");
 
-            return result.rowsAffected[0] === 1 ? db : null;
+            return result.rowsAffected[0] === 1 ? true : false;
         } catch (error) {
             throw new Error("Error en la base de datos");
         }

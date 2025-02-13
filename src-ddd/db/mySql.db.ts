@@ -8,11 +8,4 @@ const dbConfing = {
     password: process.env.password || "",
 };
 
-// async function connect() {
-//     const connection = await mysql.createConnection(dbConfing);
-//     return connection;
-// }
-
-// export { connect };
-
 export const pool = mysql.createPool(dbConfing);

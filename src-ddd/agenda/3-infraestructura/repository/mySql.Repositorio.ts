@@ -1,16 +1,26 @@
-import { type Pool } from "mysql2/promise";
-import {
-    AgendaNew,
-    Agenda,
-    AgendaActualizar,
-} from "../../1-dominio/IAgenda.entidad";
-import { IAgendaRepositorio } from "../../1-dominio/IRepositorio";
+import { PoolConnection } from "mysql2/promise";
+import { AgendaNew, Agenda } from "../../1-dominio/IAgenda.entidad";
+import { IRepositorioGenerico } from "../../../shared/repositories/IRepositorio.Generico";
 
-export class MySqlRepositorio implements IAgendaRepositorio {
-    private pool: Pool;
+export class MySqlRepositorio implements IRepositorioGenerico<Agenda> {
+    private pool: PoolConnection;
 
-    constructor({ pool }: { pool: Pool }) {
+    constructor({ pool }: { pool: PoolConnection }) {
         this.pool = pool;
+    }
+
+    async Delete(id: string): Promise<boolean> {
+        try {
+            const query2 = "DELETE FROM agendas WHERE id = ?";
+            const [data2, _table2] = await this.pool.query(query2, [id]);
+
+            console.log(data2);
+            // @ts-ignore
+            return data2.affectedRows > 0 ? true : false;
+        } catch (error) {
+            console.log(error);
+            throw new Error("Error en la base de datos");
+        }
     }
     async Create(agendaNew: AgendaNew): Promise<Agenda | null> {
         try {
@@ -55,17 +65,14 @@ export class MySqlRepositorio implements IAgendaRepositorio {
                 usuarioId,
                 id,
             ]);
-
-            console.log(data);
-
             //@ts-ignore
             return data[0];
         } catch (error) {
-            console.log(error);
             throw new Error("Error en la base de datos");
         }
     }
     async GetAll(usuarioId: string): Promise<Agenda[] | null> {
+        console.log(usuarioId);
         try {
             const query = "SELECT * FROM agendas WHERE UsuarioId = ?";
             const [data, _table] = await this.pool.query(query, [usuarioId]);
@@ -77,74 +84,23 @@ export class MySqlRepositorio implements IAgendaRepositorio {
             throw new Error("Error en la base de datos");
         }
     }
-    async Update(agenda: AgendaActualizar): Promise<Agenda | null> {
+    async Update(agenda: Agenda): Promise<Agenda | null> {
         try {
-            const query = `SELECT * FROM agendas WHERE id = ?`;
-            const [data, _table] = await this.pool.query(query, [agenda.id]);
-
-            console.log(data);
-            // @ts-ignore
-            if (data.length <= 0) {
-                return null;
-            }
-
-            const Actualizar: Agenda = {
-                //@ts-ignore
-                id: data[0].id,
-                //@ts-ignore
-                UsuarioId: data[0].UsuarioId,
-                //@ts-ignore
-                Apellido: agenda.Apellido ?? data[0].Apellido,
-                //@ts-ignore
-                Direccion: agenda.Direccion ?? data[0].Direccion,
-                //@ts-ignore
-                Email: agenda.Email ?? data[0].Email,
-                //@ts-ignore
-                Nombre: agenda.Nombre ?? data[0].Nombre,
-                //@ts-ignore
-                Telefono: agenda.Telefono ?? data[0].Telefono,
-                //@ts-ignore
-                Nota: agenda.Nota ?? data[0].Nota,
-            };
-
             const query2 = `update agendas set Nombre = ?, Apellido = ?, Direccion = ?, Nota = ?, Telefono = ?, Email = ? where id = ?`;
 
             const [data2, _table2] = await this.pool.query(query2, [
-                Actualizar.Nombre,
-                Actualizar.Apellido,
-                Actualizar.Direccion,
-                Actualizar.Nota,
-                Actualizar.Telefono,
-                Actualizar.Email,
-                Actualizar.id,
+                agenda.Nombre,
+                agenda.Apellido,
+                agenda.Direccion,
+                agenda.Nota,
+                agenda.Telefono,
+                agenda.Email,
+                agenda.id,
             ]);
 
             console.log(data2);
             // @ts-ignore
-            return data2.affectedRows > 0 ? Actualizar : null;
-        } catch (error) {
-            console.log(error);
-            throw new Error("Error en la base de datos");
-        }
-    }
-    async Delete(id: string): Promise<Agenda | null> {
-        try {
-            const query1 = "SELECT * FROM agendas WHERE id = ?";
-
-            const [data, _table] = await this.pool.query(query1, [id]);
-
-            console.log(data);
-            // @ts-ignore
-            if (data.length <= 0) {
-                return null;
-            }
-
-            const query2 = "DELETE FROM agendas WHERE id = ?";
-            const [data2, _table2] = await this.pool.query(query2, [id]);
-
-            console.log(data2);
-            // @ts-ignore
-            return data2.affectedRows > 0 ? data[0] : null;
+            return data2.affectedRows > 0 ? agenda : null;
         } catch (error) {
             console.log(error);
             throw new Error("Error en la base de datos");

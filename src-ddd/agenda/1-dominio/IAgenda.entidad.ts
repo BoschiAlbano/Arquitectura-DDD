@@ -1,6 +1,6 @@
 export interface Agenda {
-    id: number;
-    UsuarioId: number;
+    id?: number;
+    UsuarioId?: number;
     Nombre: string;
     Apellido: string;
     Telefono: string;
@@ -13,6 +13,7 @@ export type AgendaNew = Omit<Agenda, "id">;
 
 export interface AgendaActualizar {
     id: number;
+    UsuarioId: number;
     Nombre?: string;
     Apellido?: string;
     Telefono?: string;

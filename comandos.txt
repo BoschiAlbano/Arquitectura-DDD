@@ -1,1 +1,10 @@
 npm run tsc -- --init
+
+
+
+// Terminar
+- terminar awilix agenda. ✔
+- repositorio generico. ✔
+- unidad de trabajo. ✔
+- DTOs. 
+- implementar una nueva entidad CRUD

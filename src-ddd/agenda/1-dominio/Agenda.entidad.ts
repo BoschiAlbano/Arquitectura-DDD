@@ -1,13 +1,13 @@
 import { AgendaNew } from "./IAgenda.entidad";
 
 export class AgendaNewClass implements AgendaNew {
-    UsuarioId: number;
+    UsuarioId?: number;
     Nombre: string;
     Apellido: string;
-    Telefono: number;
+    Telefono: string;
     Direccion: string;
     Email: string;
-    Nota: string;
+    Nota?: string;
 
     constructor(agendaNew: AgendaNew) {
         this.UsuarioId = agendaNew.UsuarioId;

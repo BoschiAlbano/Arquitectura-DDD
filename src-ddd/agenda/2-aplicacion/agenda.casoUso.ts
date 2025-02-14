@@ -4,6 +4,7 @@ import {
     AgendaActualizar,
     AgendaNew,
 } from "../1-dominio/IAgenda.entidad";
+import { AgendaDto } from "./Dtos/agendaDto";
 
 export class AgendaCasoUso {
     private readonly UnitOfWork: UnitOfWork;
@@ -12,7 +13,11 @@ export class AgendaCasoUso {
         this.UnitOfWork = unitOfWork;
     }
 
-    public Create = async ({ agendaNew }: { agendaNew: AgendaNew }) => {
+    public Create = async ({
+        agendaNew,
+    }: {
+        agendaNew: AgendaNew;
+    }): Promise<AgendaDto | null> => {
         try {
             await this.UnitOfWork.BeginTransaction();
             const agendaRepositorio =
@@ -22,7 +27,18 @@ export class AgendaCasoUso {
 
             await this.UnitOfWork.Commit();
 
-            return result;
+            if (!result) return null;
+
+            return new AgendaDto({
+                Apellido: result.Apellido,
+                DateTime: new Date().toLocaleDateString(),
+                Direccion: result.Direccion,
+                Email: result.Email,
+                Nombre: result.Nombre,
+                Telefono: result.Telefono,
+                id: result.id,
+                Nota: result.Nota,
+            });
         } catch (error) {
             await this.UnitOfWork.Rollback();
             return null;
@@ -35,25 +51,46 @@ export class AgendaCasoUso {
     }: {
         id: string;
         usuarioId: string;
-    }) => {
+    }): Promise<AgendaDto | null> => {
         await this.UnitOfWork.BeginTransaction();
         const agendaRepositorio =
             this.UnitOfWork.GetRepository<Agenda>("agendaRepositorio");
 
-        return await agendaRepositorio.GetById(id, usuarioId);
+        const result = await agendaRepositorio.GetById(id, usuarioId);
+        console.log(result);
+
+        if (!result) return null;
+
+        return new AgendaDto({
+            ...result,
+            DateTime: new Date().toLocaleTimeString(),
+        });
     };
 
-    public GetAll = async (usuarioId: string) => {
-        // aqui van los DTO ? 🤔🤔🤔
+    public GetAll = async (usuarioId: string): Promise<AgendaDto[] | null> => {
         await this.UnitOfWork.BeginTransaction();
         const agendaRepositorio =
             this.UnitOfWork.GetRepository<Agenda>("agendaRepositorio");
 
         // Mapear Agenda ( Dominio ) a AgendaDto ()
-        return await agendaRepositorio.GetAll(usuarioId);
+        const result = await agendaRepositorio.GetAll(usuarioId);
+        if (!result) return null;
+
+        const mapper = result?.map((item) => {
+            return new AgendaDto({
+                ...item,
+                DateTime: new Date().toLocaleDateString(),
+            });
+        });
+
+        return mapper;
     };
 
-    public Update = async ({ agenda }: { agenda: AgendaActualizar }) => {
+    public Update = async ({
+        agenda,
+    }: {
+        agenda: AgendaActualizar;
+    }): Promise<AgendaDto | null> => {
         try {
             await this.UnitOfWork.BeginTransaction();
 
@@ -84,7 +121,13 @@ export class AgendaCasoUso {
 
             const result = await agendaRepositorio.Update(Actualizar);
             await this.UnitOfWork.Commit();
-            return result;
+
+            if (!result) return null;
+
+            return new AgendaDto({
+                ...result,
+                DateTime: new Date().toLocaleDateString(),
+            });
         } catch (error) {
             await this.UnitOfWork.Rollback();
             return null;
@@ -97,7 +140,7 @@ export class AgendaCasoUso {
     }: {
         id: string;
         UsuarioId: string;
-    }) => {
+    }): Promise<AgendaDto | null> => {
         try {
             await this.UnitOfWork.BeginTransaction();
 
@@ -121,7 +164,12 @@ export class AgendaCasoUso {
 
             this.UnitOfWork.Commit();
 
-            return borrar ? agendaDB : null;
+            return borrar
+                ? new AgendaDto({
+                      ...agendaDB,
+                      DateTime: new Date().toLocaleDateString(),
+                  })
+                : null;
         } catch (error) {
             await this.UnitOfWork.Rollback();
             return null;

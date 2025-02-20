@@ -1,12 +1,10 @@
 import { IUsuarioRepositorio } from "../../1-dominio/IRepositorio";
-import { usuario, usuarioRegister } from "../../1-dominio/IUsuario.entidad";
-// import { getConnection, sql } from "../../../db/sqlServer.db";
 import { SqlServerConnection, sql } from "../../../db/sqlServer.db";
-
+import { Usuario } from "../../1-dominio/Usuario.entidad";
 export class SqlServerRepositorio implements IUsuarioRepositorio {
     private db = SqlServerConnection.getInstance();
 
-    async Create(usuarioRegister: usuarioRegister): Promise<usuario | null> {
+    async Create(usuarioRegister: Usuario): Promise<Usuario | null> {
         try {
             const query = `
             INSERT INTO usuarios (Nombre, Apellido, Dni, Email, Password)
@@ -31,7 +29,7 @@ export class SqlServerRepositorio implements IUsuarioRepositorio {
             throw new Error("Error en la base de datos");
         }
     }
-    async GetByEmail(email: string): Promise<usuario | null> {
+    async GetByEmail(email: string): Promise<Usuario | null> {
         try {
             // Preparar la consulta parametrizada
             // const pool = await getConnection();
@@ -49,13 +47,13 @@ export class SqlServerRepositorio implements IUsuarioRepositorio {
             throw new Error("Error en la base de datos");
         }
     }
-    GetAll(): Promise<usuario[] | null> {
+    GetAll(): Promise<Usuario[] | null> {
         throw new Error("Method not implemented.");
     }
-    Update(_usuarioRegister: usuarioRegister): Promise<usuario | null> {
+    Update(_usuarioRegister: Usuario): Promise<Usuario | null> {
         throw new Error("Method not implemented.");
     }
-    Delete(_id: string): Promise<usuario | null> {
+    Delete(_id: string): Promise<Usuario | null> {
         throw new Error("Method not implemented.");
     }
 }

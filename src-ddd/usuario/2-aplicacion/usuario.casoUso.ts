@@ -1,34 +1,29 @@
-import { IUsuarioRepositorio } from "../1-dominio/IRepositorio";
-import { UsuarioRegister } from "../1-dominio/Usuario.entidad";
+import {
+    UsuarioRegisterDto,
+    UsuarioLoginDto,
+    UsuarioDto,
+} from "./Dtos/usuarioDto";
 import { CustomError } from "../../utilities/customError";
 // servicios de consulta a la base de datos
 import Jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
 import config from "../../config";
+import { UnitOfWork } from "../../shared/unitOfwork/UnitOfWork";
+import { Usuario } from "../1-dominio/Usuario.entidad";
 
 export class UsuarioCasoUso {
-    private readonly IUsuarioRepositorio: IUsuarioRepositorio;
+    private readonly UnitOfWork: UnitOfWork;
 
-    // constructor(iUsuarioRepositorio: IUsuarioRepositorio) {
-    //     this.IUsuarioRepositorio = iUsuarioRepositorio;
-    // }
-    constructor({
-        usuarioRepositorio,
-    }: {
-        usuarioRepositorio: IUsuarioRepositorio;
-    }) {
-        this.IUsuarioRepositorio = usuarioRepositorio;
+    constructor({ unitOfWork }: { unitOfWork: UnitOfWork }) {
+        this.UnitOfWork = unitOfWork;
     }
 
-    public Login = async ({
-        Email,
-        Password,
-    }: {
-        Email: string;
-        Password: string;
-    }) => {
-        // buscar usuario
-        const usuario = await this.IUsuarioRepositorio.GetByEmail(Email);
+    public Login = async (UsuarioLoginDto: UsuarioLoginDto) => {
+        const { Email, Password } = UsuarioLoginDto;
+
+        await this.UnitOfWork.BeginTransaction();
+        const usuarioRepositorio = this.UnitOfWork.GetRepositoryUsuario();
+        const usuario = await usuarioRepositorio.GetByEmail(Email);
 
         if (!usuario) {
             throw new CustomError(
@@ -71,14 +66,46 @@ export class UsuarioCasoUso {
         return { usuario, token, userSession };
     };
 
-    public Register = async (usuarioRegister: UsuarioRegister) => {
-        // Encriptar password
-        const hashedPassword = await bcrypt.hash(usuarioRegister.Password, 10);
+    public Register = async (
+        usuarioRegister: UsuarioRegisterDto
+    ): Promise<UsuarioDto> => {
+        try {
+            // Encriptar password
+            const hashedPassword = await bcrypt.hash(
+                usuarioRegister.Password,
+                10
+            );
 
-        const respuesta = await this.IUsuarioRepositorio.Create({
-            ...usuarioRegister,
-            Password: hashedPassword,
-        });
-        return { respuesta };
+            await this.UnitOfWork.BeginTransaction();
+            const usuarioRepositorio = this.UnitOfWork.GetRepositoryUsuario();
+
+            const usuario = new Usuario({
+                Apellido: usuarioRegister.Apellido,
+                Dni: usuarioRegister.Dni,
+                Email: usuarioRegister.Email,
+                Nombre: usuarioRegister.Nombre,
+                Password: hashedPassword,
+            });
+
+            const respuesta = await usuarioRepositorio.Create(usuario);
+
+            await this.UnitOfWork.Commit();
+
+            if (!respuesta) {
+                throw new CustomError("Error al registrar el usuario.");
+            }
+
+            return new UsuarioDto({
+                Nombre: respuesta.Nombre,
+                Apellido: respuesta.Apellido,
+                Dni: respuesta.Dni,
+                Email: respuesta.Email,
+                Password: respuesta.Password,
+            });
+        } catch (error: any) {
+            console.log("aqui ---------->");
+            await this.UnitOfWork.Rollback();
+            throw new CustomError(error);
+        }
     };
 }

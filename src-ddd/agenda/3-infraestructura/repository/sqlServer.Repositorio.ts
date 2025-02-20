@@ -1,5 +1,5 @@
 import { SqlServerConnection, sql } from "../../../db/sqlServer.db";
-import { AgendaNew, Agenda } from "../../1-dominio/IAgenda.entidad";
+import { Agenda } from "../../1-dominio/Agenda.entidad";
 import { IAgendaRepositorio } from "../../1-dominio/IRepositorio";
 
 export class SqlServerRepositorio implements IAgendaRepositorio {
@@ -37,7 +37,7 @@ export class SqlServerRepositorio implements IAgendaRepositorio {
             throw new Error("Error en la base de datos");
         }
     }
-    async Create(agendaNew: AgendaNew): Promise<Agenda | null> {
+    async Create(agendaNew: Agenda): Promise<Agenda | null> {
         try {
             // const pool = await getConnection();
             const pool = await this.db.getConnection();

@@ -1,10 +1,6 @@
 import { UnitOfWork } from "../../shared/unitOfwork/UnitOfWork";
-import {
-    Agenda,
-    AgendaActualizar,
-    AgendaNew,
-} from "../1-dominio/IAgenda.entidad";
-import { AgendaDto } from "./Dtos/agendaDto";
+import { Agenda } from "../1-dominio/Agenda.entidad";
+import { AgendaActualizarDto, AgendaDto, AgendaNewDto } from "./Dtos/agendaDto";
 
 export class AgendaCasoUso {
     private readonly UnitOfWork: UnitOfWork;
@@ -14,32 +10,50 @@ export class AgendaCasoUso {
     }
 
     public Create = async ({
-        agendaNew,
+        agendaNewDto,
     }: {
-        agendaNew: AgendaNew;
+        agendaNewDto: AgendaNewDto;
     }): Promise<AgendaDto | null> => {
+        // recibe un dto y lo convierte en una entidad para ser guardada en la base de datos y retorna un dto.
         try {
+            // Iniciamos la conexion con la base de datos
             await this.UnitOfWork.BeginTransaction();
+            // Obtenemos el repositorio de la entidad Agenda
             const agendaRepositorio =
                 this.UnitOfWork.GetRepository<Agenda>("agendaRepositorio");
+            // Creamos una nueva entidad de tipo Agenda
+            const agenda = new Agenda({
+                Apellido: agendaNewDto.Apellido,
+                Direccion: agendaNewDto.Direccion,
+                Email: agendaNewDto.Email,
+                Nombre: agendaNewDto.Nombre,
+                Telefono: agendaNewDto.Telefono,
+                Nota: agendaNewDto.Nota,
+                UsuarioId: agendaNewDto.UsuarioId,
+            });
+            // Guardamos la entidad en la base de datos
+            const result = await agendaRepositorio.Create(agenda);
 
-            const result = await agendaRepositorio.Create(agendaNew);
-
+            // Persistimos los cambios en la base de datos
             await this.UnitOfWork.Commit();
 
+            // Si no se guardo la entidad retornamos null
             if (!result) return null;
 
+            // Retornamos un dto con la entidad guardada
             return new AgendaDto({
+                id: result.id,
+                UsuarioId: result.UsuarioId,
                 Apellido: result.Apellido,
                 DateTime: new Date().toLocaleDateString(),
                 Direccion: result.Direccion,
                 Email: result.Email,
                 Nombre: result.Nombre,
                 Telefono: result.Telefono,
-                id: result.id,
                 Nota: result.Nota,
             });
         } catch (error) {
+            // Si ocurre un error en la transaccion se hace un rollback
             await this.UnitOfWork.Rollback();
             return null;
         }
@@ -72,7 +86,6 @@ export class AgendaCasoUso {
         const agendaRepositorio =
             this.UnitOfWork.GetRepository<Agenda>("agendaRepositorio");
 
-        // Mapear Agenda ( Dominio ) a AgendaDto ()
         const result = await agendaRepositorio.GetAll(usuarioId);
         if (!result) return null;
 
@@ -89,7 +102,7 @@ export class AgendaCasoUso {
     public Update = async ({
         agenda,
     }: {
-        agenda: AgendaActualizar;
+        agenda: AgendaActualizarDto;
     }): Promise<AgendaDto | null> => {
         try {
             await this.UnitOfWork.BeginTransaction();

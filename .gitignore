@@ -6,6 +6,3 @@
 
 # local env files
 .env*.local
-
-# http
-.http

@@ -60,7 +60,11 @@ export class AgendaController {
             const validatedData = agendaSchema.parse(req.body);
 
             const result = await this.AgendaCasoUso.Create({
-                agendaNew: { ...validatedData, UsuarioId },
+                agendaNewDto: {
+                    ...validatedData,
+                    UsuarioId,
+                    DateTime: new Date().toLocaleDateString(),
+                },
             });
 
             return res.status(201).json({

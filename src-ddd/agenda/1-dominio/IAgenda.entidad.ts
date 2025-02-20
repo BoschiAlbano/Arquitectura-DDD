@@ -1,23 +1,10 @@
-export interface Agenda {
+export interface IAgenda {
     id?: number;
-    UsuarioId?: number;
+    UsuarioId: number;
     Nombre: string;
     Apellido: string;
     Telefono: string;
     Direccion: string;
     Email: string;
-    Nota?: string;
-}
-
-export type AgendaNew = Omit<Agenda, "id">;
-
-export interface AgendaActualizar {
-    id: number;
-    UsuarioId: number;
-    Nombre?: string;
-    Apellido?: string;
-    Telefono?: string;
-    Direccion?: string;
-    Email?: string;
     Nota?: string;
 }

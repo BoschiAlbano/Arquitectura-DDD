@@ -1,5 +1,6 @@
 export interface IAgendaDto {
     id?: number;
+    UsuarioId: number;
     Nombre: string;
     Apellido: string;
     Telefono: string;
@@ -18,6 +19,7 @@ export class AgendaDto implements IAgendaDto {
     Email: string;
     Nota?: string | undefined;
     DateTime: string;
+    UsuarioId: number;
 
     constructor(agendaDto: IAgendaDto) {
         (this.Apellido = agendaDto.Apellido),
@@ -28,5 +30,18 @@ export class AgendaDto implements IAgendaDto {
             (this.Email = agendaDto.Email);
         this.Nota = agendaDto.Nota;
         this.id = agendaDto.id;
+        this.UsuarioId = agendaDto.UsuarioId;
     }
+}
+export type AgendaNewDto = Omit<IAgendaDto, "id">;
+
+export interface AgendaActualizarDto {
+    id: number;
+    UsuarioId: number;
+    Nombre?: string;
+    Apellido?: string;
+    Telefono?: string;
+    Direccion?: string;
+    Email?: string;
+    Nota?: string;
 }

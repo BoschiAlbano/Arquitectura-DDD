@@ -1,15 +1,15 @@
-import { Pool } from "mysql2/promise";
+import { PoolConnection } from "mysql2/promise";
 import { IUsuarioRepositorio } from "../../1-dominio/IRepositorio";
-import { usuarioRegister, usuario } from "../../1-dominio/IUsuario.entidad";
+import { Usuario } from "../../1-dominio/Usuario.entidad";
+import { CustomError } from "../../../utilities/customError";
 
 export class MySqlRepositorio implements IUsuarioRepositorio {
-    private pool: Pool;
+    private pool: PoolConnection;
 
-    constructor({ pool }: { pool: Pool }) {
+    constructor(pool: PoolConnection) {
         this.pool = pool;
     }
-
-    async Create(usuarioRegister: usuarioRegister): Promise<usuario | null> {
+    async Create(usuarioRegister: Usuario): Promise<Usuario | null> {
         try {
             const query = `
             INSERT INTO usuarios (Nombre, Apellido, Dni, Email, Password)
@@ -34,11 +34,11 @@ export class MySqlRepositorio implements IUsuarioRepositorio {
                 Email: usuarioRegister.Email,
                 Password: usuarioRegister.Password,
             };
-        } catch (error) {
-            throw new Error("Error en la base de datos");
+        } catch (error: any) {
+            throw new CustomError(error.sqlMessage);
         }
     }
-    async GetByEmail(mail: string): Promise<usuario | null> {
+    async GetByEmail(mail: string): Promise<Usuario | null> {
         try {
             const query = `SELECT * FROM usuarios AS Us WHERE Us.Email = ?`;
 
@@ -52,13 +52,16 @@ export class MySqlRepositorio implements IUsuarioRepositorio {
             throw new Error("Error en la base de datos");
         }
     }
-    async GetAll(): Promise<usuario[] | null> {
+    async GetAll(): Promise<Usuario[] | null> {
         throw new Error("Method not implemented.");
     }
-    async Update(_usuarioRegister: usuarioRegister): Promise<usuario | null> {
+    async Update(_usuarioRegister: Usuario): Promise<Usuario | null> {
         throw new Error("Method not implemented.");
     }
-    async Delete(_id: string): Promise<usuario | null> {
+    async Delete(_id: string): Promise<Usuario | null> {
+        throw new Error("Method not implemented.");
+    }
+    async GetById(_id: string): Promise<Usuario | null> {
         throw new Error("Method not implemented.");
     }
 }

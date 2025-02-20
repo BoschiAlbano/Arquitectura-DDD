@@ -1,7 +1,9 @@
 import { Pool, PoolConnection } from "mysql2/promise";
 import { IRepositorioGenerico } from "../repositories/IRepositorio.Generico";
 import { IUnitOfWork } from "./IUnitOfWork";
-import { MySqlRepositorio } from "../../agenda/3-infraestructura/repository/mySql.Repositorio";
+import { MySqlRepositorio as MySqlRepositorioAgenda } from "../../agenda/3-infraestructura/repository/mySql.Repositorio";
+import { IUsuarioRepositorio } from "../../usuario/1-dominio/IRepositorio";
+import { MySqlRepositorio as MySqlRepositorioUsuario } from "../../usuario/3-infraestructura/repository/mySql.Repositorio";
 
 export class UnitOfWork implements IUnitOfWork {
     private pool: Pool;
@@ -60,11 +62,32 @@ export class UnitOfWork implements IUnitOfWork {
                     throw new Error("No active connction for repository");
                 }
 
-                return new MySqlRepositorio({
-                    pool: this.connection,
-                }) as IRepositorioGenerico<T>;
+                // return new MySqlRepositorioAgenda({
+                //     pool: this.connection,
+                // }) as IRepositorioGenerico<T>;
+                return new MySqlRepositorioAgenda(
+                    this.connection
+                ) as IRepositorioGenerico<T>;
             }
             throw new Error("Repository not found");
+        } catch (error) {
+            console.log(error);
+            throw error;
+        }
+    }
+
+    GetRepositoryUsuario(): IUsuarioRepositorio {
+        try {
+            if (!this.connection) {
+                throw new Error("No active connction for repository");
+            }
+
+            // return new MySqlRepositorioUsuario({
+            //     pool: this.connection,
+            // }) as IUsuarioRepositorio;
+            return new MySqlRepositorioUsuario(
+                this.connection
+            ) as IUsuarioRepositorio;
         } catch (error) {
             console.log(error);
             throw error;

@@ -166,6 +166,13 @@ export class UsuarioController {
                 });
             }
 
+            if (error instanceof CustomError) {
+                return res.status(400).json({
+                    error: 1,
+                    mensaje: error.message,
+                });
+            }
+
             // Otros errores
             next(error);
         }

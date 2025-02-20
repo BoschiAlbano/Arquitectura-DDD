@@ -1,9 +1,9 @@
-import { usuario, usuarioRegister } from "./IUsuario.entidad";
+import { Usuario } from "./Usuario.entidad";
 
 export interface IUsuarioRepositorio {
-    Create(usuarioRegister: usuarioRegister): Promise<usuario | null>;
-    GetByEmail(mail: string): Promise<usuario | null>;
-    GetAll(): Promise<usuario[] | null>;
-    Update(usuarioRegister: usuarioRegister): Promise<usuario | null>;
-    Delete(id: string): Promise<usuario | null>;
+    Create(usuarioRegister: Usuario): Promise<Usuario | null>;
+    GetByEmail(mail: string): Promise<Usuario | null>;
+    GetAll(): Promise<Usuario[] | null>;
+    Update(usuarioRegister: Usuario): Promise<Usuario | null>;
+    Delete(id: string): Promise<Usuario | null>;
 }

@@ -1,11 +1,11 @@
 import { PoolConnection } from "mysql2/promise";
-import { AgendaNew, Agenda } from "../../1-dominio/IAgenda.entidad";
+import { Agenda } from "../../1-dominio/Agenda.entidad";
 import { IRepositorioGenerico } from "../../../shared/repositories/IRepositorio.Generico";
 
 export class MySqlRepositorio implements IRepositorioGenerico<Agenda> {
     private pool: PoolConnection;
 
-    constructor({ pool }: { pool: PoolConnection }) {
+    constructor(pool: PoolConnection) {
         this.pool = pool;
     }
 
@@ -22,7 +22,7 @@ export class MySqlRepositorio implements IRepositorioGenerico<Agenda> {
             throw new Error("Error en la base de datos");
         }
     }
-    async Create(agendaNew: AgendaNew): Promise<Agenda | null> {
+    async Create(agendaNew: Agenda): Promise<Agenda | null> {
         try {
             const query = `
                     INSERT INTO agendas (UsuarioId, Nombre, Apellido, Telefono, Direccion, Email, Nota) VALUES (?, ?, ?, ?, ?, ?, ?);

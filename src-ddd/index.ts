@@ -1,5 +1,15 @@
+import "reflect-metadata";
 import app from "./app";
 
-app.listen(app.get("port"));
+import { AppDataSource } from "./db/typeorm.db";
 
-console.log("server on puerto", app.get("port"));
+app.listen(app.get("port"), () => {
+    try {
+        console.log("server on puerto", app.get("port"));
+        AppDataSource.initialize();
+    } catch (error) {
+        console.log("Error Start Server", error);
+    }
+});
+
+// console.log("server on puerto", app.get("port"));

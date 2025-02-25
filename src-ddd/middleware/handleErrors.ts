@@ -35,7 +35,11 @@ const ERROR_HANDLERS = {
         console.error(error.name);
         console.error(error.message);
 
-        res.status(500).end();
+        // res.status(500).end();
+        res.status(500).json({
+            msj: error.message,
+            error: error.name,
+        });
     },
 };
 

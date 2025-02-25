@@ -6,5 +6,6 @@ npm run tsc -- --init
 - terminar awilix agenda. ✔
 - repositorio generico. ✔
 - unidad de trabajo. ✔
-- DTOs. 
+- DTOs. ✔
+- implementar TypeORM -> no es compatible con la libreria mssql para el repositorio de SQLserver. ✔
 - implementar una nueva entidad CRUD

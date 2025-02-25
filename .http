@@ -6,7 +6,7 @@ content-type: application/json
     "Nombre": "Albano",
     "Apellido": "Boschi",
     "Dni": "41771993",
-    "Email": "boschi.jose@gmail.com",
+    "Email": "boschi.albano.jose@gmail.com",
     "Password": "41771998$A"
 }
 ### Login
@@ -17,17 +17,19 @@ content-type: application/json
     "Email": "boschi.albano.jose@gmail.com",
     "Password": "41771998$A"
 }
+### Logout
+POST http://localhost:4000/logout
 ### GETALL Agenda
 GET http://localhost:4000/agenda
-Cookie: token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwidXN1YXJpbyI6IkFsYmFubyBCb3NjaGkiLCJpYXQiOjE3NDAwODA5MjYsImV4cCI6MTc0MDUxMjkyNn0.TEZ_OxJVDnSGCTJOd3CMevTjDgFEN2ag9srrqW6hgbA; Path=/; Expires=Sun, 23 Feb 2025 19:48:46 GMT; HttpOnly; Secure; SameSite=None,session=%7B%22id%22%3A1%2C%22usuario%22%3A%22Albano%20Boschi%22%2C%22email%22%3A%22boschi.albano.jose%40gmail.com%22%7D; Path=/; Expires=Sun, 23 Feb 2025 19:48:46 GMT; Secure; SameSite=None
+Cookie: token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwidXN1YXJpbyI6IkFsYmFubyBCb3NjaGkiLCJpYXQiOjE3NDA1MjI5NzcsImV4cCI6MTc0MDk1NDk3N30.1q9YGHx4FcC8Aqdte9jhP3DX2F_qSDninqCxrhnEshY; Path=/; Expires=Fri, 28 Feb 2025 22:36:17 GMT; HttpOnly; Secure; SameSite=None,session=%7B%22id%22%3A2%2C%22usuario%22%3A%22Albano%20Boschi%22%2C%22email%22%3A%22boschi.albano.jose%40gmail.com%22%7D; Path=/; Expires=Fri, 28 Feb 2025 22:36:17 GMT; Secure; SameSite=None
 
 ### GETBYID Agenda
-GET http://localhost:4000/agenda/3
-Cookie: token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwidXN1YXJpbyI6IkFsYmFubyBCb3NjaGkiLCJpYXQiOjE3NDAwODA5MjYsImV4cCI6MTc0MDUxMjkyNn0.TEZ_OxJVDnSGCTJOd3CMevTjDgFEN2ag9srrqW6hgbA; Path=/; Expires=Sun, 23 Feb 2025 19:48:46 GMT; HttpOnly; Secure; SameSite=None,session=%7B%22id%22%3A1%2C%22usuario%22%3A%22Albano%20Boschi%22%2C%22email%22%3A%22boschi.albano.jose%40gmail.com%22%7D; Path=/; Expires=Sun, 23 Feb 2025 19:48:46 GMT; Secure; SameSite=None
+GET http://localhost:4000/agenda/18
+Cookie: token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwidXN1YXJpbyI6IkFsYmFubyBCb3NjaGkiLCJpYXQiOjE3NDA1MjI5NzcsImV4cCI6MTc0MDk1NDk3N30.1q9YGHx4FcC8Aqdte9jhP3DX2F_qSDninqCxrhnEshY; Path=/; Expires=Fri, 28 Feb 2025 22:36:17 GMT; HttpOnly; Secure; SameSite=None,session=%7B%22id%22%3A2%2C%22usuario%22%3A%22Albano%20Boschi%22%2C%22email%22%3A%22boschi.albano.jose%40gmail.com%22%7D; Path=/; Expires=Fri, 28 Feb 2025 22:36:17 GMT; Secure; SameSite=None
 
 ### CREATE Agenda
 POST http://localhost:4000/agenda
-Cookie: token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwidXN1YXJpbyI6IkFsYmFubyBCb3NjaGkiLCJpYXQiOjE3NDAwODA5MjYsImV4cCI6MTc0MDUxMjkyNn0.TEZ_OxJVDnSGCTJOd3CMevTjDgFEN2ag9srrqW6hgbA; Path=/; Expires=Sun, 23 Feb 2025 19:48:46 GMT; HttpOnly; Secure; SameSite=None,session=%7B%22id%22%3A1%2C%22usuario%22%3A%22Albano%20Boschi%22%2C%22email%22%3A%22boschi.albano.jose%40gmail.com%22%7D; Path=/; Expires=Sun, 23 Feb 2025 19:48:46 GMT; Secure; SameSite=None
+Cookie: token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwidXN1YXJpbyI6IkFsYmFubyBCb3NjaGkiLCJpYXQiOjE3NDA1MjI5NzcsImV4cCI6MTc0MDk1NDk3N30.1q9YGHx4FcC8Aqdte9jhP3DX2F_qSDninqCxrhnEshY; Path=/; Expires=Fri, 28 Feb 2025 22:36:17 GMT; HttpOnly; Secure; SameSite=None,session=%7B%22id%22%3A2%2C%22usuario%22%3A%22Albano%20Boschi%22%2C%22email%22%3A%22boschi.albano.jose%40gmail.com%22%7D; Path=/; Expires=Fri, 28 Feb 2025 22:36:17 GMT; Secure; SameSite=None
 content-type: application/json
 
 {
@@ -41,11 +43,11 @@ content-type: application/json
 
 ### UPDATE Agenda
 PUT http://localhost:4000/agenda
-Cookie: token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwidXN1YXJpbyI6IkFsYmFubyBCb3NjaGkiLCJpYXQiOjE3NDAwODA5MjYsImV4cCI6MTc0MDUxMjkyNn0.TEZ_OxJVDnSGCTJOd3CMevTjDgFEN2ag9srrqW6hgbA; Path=/; Expires=Sun, 23 Feb 2025 19:48:46 GMT; HttpOnly; Secure; SameSite=None,session=%7B%22id%22%3A1%2C%22usuario%22%3A%22Albano%20Boschi%22%2C%22email%22%3A%22boschi.albano.jose%40gmail.com%22%7D; Path=/; Expires=Sun, 23 Feb 2025 19:48:46 GMT; Secure; SameSite=None
+Cookie: token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwidXN1YXJpbyI6IkFsYmFubyBCb3NjaGkiLCJpYXQiOjE3NDA1MjI5NzcsImV4cCI6MTc0MDk1NDk3N30.1q9YGHx4FcC8Aqdte9jhP3DX2F_qSDninqCxrhnEshY; Path=/; Expires=Fri, 28 Feb 2025 22:36:17 GMT; HttpOnly; Secure; SameSite=None,session=%7B%22id%22%3A2%2C%22usuario%22%3A%22Albano%20Boschi%22%2C%22email%22%3A%22boschi.albano.jose%40gmail.com%22%7D; Path=/; Expires=Fri, 28 Feb 2025 22:36:17 GMT; Secure; SameSite=None
 content-type: application/json
 
 {
-    "id": 4,
+    "id": 18,
     "Nombre": "Albano",
     "Apellido": "Boschi",
     "Telefono": "3816206925",
@@ -55,5 +57,15 @@ content-type: application/json
 }
 
 ### DELETE Agenda
-DELETE http://localhost:4000/agenda/3
-Cookie: token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwidXN1YXJpbyI6IkFsYmFubyBCb3NjaGkiLCJpYXQiOjE3NDAwODA5MjYsImV4cCI6MTc0MDUxMjkyNn0.TEZ_OxJVDnSGCTJOd3CMevTjDgFEN2ag9srrqW6hgbA; Path=/; Expires=Sun, 23 Feb 2025 19:48:46 GMT; HttpOnly; Secure; SameSite=None,session=%7B%22id%22%3A1%2C%22usuario%22%3A%22Albano%20Boschi%22%2C%22email%22%3A%22boschi.albano.jose%40gmail.com%22%7D; Path=/; Expires=Sun, 23 Feb 2025 19:48:46 GMT; Secure; SameSite=None
+DELETE http://localhost:4000/agenda/18
+Cookie: token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwidXN1YXJpbyI6IkFsYmFubyBCb3NjaGkiLCJpYXQiOjE3NDA1MjI5NzcsImV4cCI6MTc0MDk1NDk3N30.1q9YGHx4FcC8Aqdte9jhP3DX2F_qSDninqCxrhnEshY; Path=/; Expires=Fri, 28 Feb 2025 22:36:17 GMT; HttpOnly; Secure; SameSite=None,session=%7B%22id%22%3A2%2C%22usuario%22%3A%22Albano%20Boschi%22%2C%22email%22%3A%22boschi.albano.jose%40gmail.com%22%7D; Path=/; Expires=Fri, 28 Feb 2025 22:36:17 GMT; Secure; SameSite=None
+
+
+
+
+### Obtener todas las agendas por ruta de usuario
+GET http://localhost:4000/usuarios/agendas
+Cookie: token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwidXN1YXJpbyI6IkFsYmFubyBCb3NjaGkiLCJpYXQiOjE3NDA1MjI5NzcsImV4cCI6MTc0MDk1NDk3N30.1q9YGHx4FcC8Aqdte9jhP3DX2F_qSDninqCxrhnEshY; Path=/; Expires=Fri, 28 Feb 2025 22:36:17 GMT; HttpOnly; Secure; SameSite=None,session=%7B%22id%22%3A2%2C%22usuario%22%3A%22Albano%20Boschi%22%2C%22email%22%3A%22boschi.albano.jose%40gmail.com%22%7D; Path=/; Expires=Fri, 28 Feb 2025 22:36:17 GMT; Secure; SameSite=None
+
+
+

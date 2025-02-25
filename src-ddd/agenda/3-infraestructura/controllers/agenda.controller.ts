@@ -67,6 +67,14 @@ export class AgendaController {
                 },
             });
 
+            if (result === null) {
+                return res.status(400).json({
+                    error: 1,
+                    mensaje: "Error al guardar el contacto.",
+                    datos: {},
+                });
+            }
+
             return res.status(201).json({
                 error: 0,
                 mensaje: "Contacto guardado con éxito.",

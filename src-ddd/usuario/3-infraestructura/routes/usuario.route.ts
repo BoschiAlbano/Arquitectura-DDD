@@ -6,6 +6,7 @@ import { Router } from "express";
 // import { pool } from "../../../db/mySql.db";
 import container from "../../../container";
 import { scopePerRequest } from "awilix-express";
+import Control_Token_Usuario from "../../../middleware/controlToken";
 const _router = Router();
 
 // Iniciamos el repo
@@ -28,5 +29,11 @@ const usuarioController = container.resolve("usuarioController");
 _router.post("/login", usuarioController.Login);
 _router.post("/register", usuarioController.Register);
 _router.post("/logout", usuarioController.Logout);
+
+_router.get(
+    "/usuarios/agendas",
+    Control_Token_Usuario,
+    usuarioController.Agendas
+);
 
 export default _router;

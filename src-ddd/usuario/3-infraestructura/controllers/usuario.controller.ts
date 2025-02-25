@@ -1,3 +1,4 @@
+import { NextFunction, Response } from "express";
 import { CustomError } from "../../../utilities/customError";
 import { UsuarioCasoUso } from "../../2-aplicacion/usuario.casoUso";
 // import { NextFunction, Request, Response } from "express";
@@ -174,7 +175,20 @@ export class UsuarioController {
             }
 
             // Otros errores
-            next(error);
+            return next(error);
+        }
+    };
+
+    public Agendas = async (_req: any, res: Response, next: NextFunction) => {
+        try {
+            const result = await this.UsuarioCasoUso.UsuariosAndAgendas();
+
+            return res.status(200).json({
+                error: 0,
+                mensaje: result,
+            });
+        } catch (error) {
+            return next(error);
         }
     };
 }

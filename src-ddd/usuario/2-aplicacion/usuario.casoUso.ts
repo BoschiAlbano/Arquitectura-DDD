@@ -21,49 +21,60 @@ export class UsuarioCasoUso {
     public Login = async (UsuarioLoginDto: UsuarioLoginDto) => {
         const { Email, Password } = UsuarioLoginDto;
 
-        await this.UnitOfWork.BeginTransaction();
-        const usuarioRepositorio = this.UnitOfWork.GetRepositoryUsuario();
-        const usuario = await usuarioRepositorio.GetByEmail(Email);
+        try {
+            await this.UnitOfWork.BeginTransaction();
+            const usuarioRepositorio =
+                await this.UnitOfWork.GetRepositoryUsuario();
+            const usuario = await usuarioRepositorio.GetByEmail(Email);
 
-        if (!usuario) {
-            throw new CustomError(
-                "Usuario y/o Password son incorrectos o no Existen."
+            if (!usuario) {
+                throw new CustomError(
+                    "Usuario y/o Password son incorrectos o no Existen."
+                );
+            }
+
+            // Comparar passwords
+            const isValidPassword = await bcrypt.compare(
+                Password,
+                usuario.Password
             );
-        }
 
-        // Comparar passwords
-        const isValidPassword = await bcrypt.compare(
-            Password,
-            usuario.Password
-        );
+            if (!isValidPassword) {
+                throw new CustomError(
+                    "Usuario y/o Password son incorrectos o no Existen."
+                );
+            }
 
-        if (!isValidPassword) {
-            throw new CustomError(
-                "Usuario y/o Password son incorrectos o no Existen."
+            // Crear payload para el JWT con información mínima necesaria
+            const tokenPayload = {
+                id: usuario.id,
+                usuario: `${usuario.Nombre} ${usuario.Apellido}`,
+            };
+
+            // Generar JWT
+            // @ts-ignore
+            const token = Jwt.sign(
+                tokenPayload,
+                config.CLAVESECRETAJWT as string,
+                {
+                    expiresIn: config.JWT_TIEMPO_EXPIRA as string,
+                    algorithm: "HS256",
+                }
             );
+
+            // Generar Token Session
+            const userSession = {
+                id: usuario.id,
+                usuario: `${usuario.Nombre} ${usuario.Apellido}`,
+                email: usuario.Email,
+            };
+
+            return { usuario, token, userSession };
+        } catch (error) {
+            console.log(error);
+            await this.UnitOfWork.Rollback();
+            throw new CustomError("Error al iniciar sesión.");
         }
-
-        // Crear payload para el JWT con información mínima necesaria
-        const tokenPayload = {
-            id: usuario.id,
-            usuario: `${usuario.Nombre} ${usuario.Apellido}`,
-        };
-
-        // Generar JWT
-        // @ts-ignore
-        const token = Jwt.sign(tokenPayload, config.CLAVESECRETAJWT as string, {
-            expiresIn: config.JWT_TIEMPO_EXPIRA as string,
-            algorithm: "HS256",
-        });
-
-        // Generar Token Session
-        const userSession = {
-            id: usuario.id,
-            usuario: `${usuario.Nombre} ${usuario.Apellido}`,
-            email: usuario.Email,
-        };
-
-        return { usuario, token, userSession };
     };
 
     public Register = async (
@@ -77,15 +88,16 @@ export class UsuarioCasoUso {
             );
 
             await this.UnitOfWork.BeginTransaction();
-            const usuarioRepositorio = this.UnitOfWork.GetRepositoryUsuario();
+            const usuarioRepositorio =
+                await this.UnitOfWork.GetRepositoryUsuario();
 
-            const usuario = new Usuario({
-                Apellido: usuarioRegister.Apellido,
-                Dni: usuarioRegister.Dni,
-                Email: usuarioRegister.Email,
-                Nombre: usuarioRegister.Nombre,
-                Password: hashedPassword,
-            });
+            const usuario = new Usuario();
+
+            usuario.Apellido = usuarioRegister.Apellido;
+            usuario.Dni = usuarioRegister.Dni;
+            usuario.Email = usuarioRegister.Email;
+            usuario.Nombre = usuarioRegister.Nombre;
+            usuario.Password = hashedPassword;
 
             const respuesta = await usuarioRepositorio.Create(usuario);
 
@@ -103,9 +115,25 @@ export class UsuarioCasoUso {
                 Password: respuesta.Password,
             });
         } catch (error: any) {
-            console.log("aqui ---------->");
             await this.UnitOfWork.Rollback();
             throw new CustomError(error);
+        }
+    };
+
+    public UsuariosAndAgendas = async (): Promise<Usuario[] | null> => {
+        try {
+            await this.UnitOfWork.BeginTransaction();
+
+            const usuarioRepositorio =
+                await this.UnitOfWork.GetRepositoryUsuario();
+
+            const result = await usuarioRepositorio.GetAll();
+
+            return result;
+        } catch (error: any) {
+            await this.UnitOfWork.Rollback();
+
+            throw new CustomError(error.message);
         }
     };
 }
